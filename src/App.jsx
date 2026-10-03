@@ -33,6 +33,8 @@ import BuildYourFitPage from './pages/BuildYourFitPage';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
+import AdminRoute from './components/admin/AdminRoute';
+import AdminOrders from './pages/admin/AdminOrders';
 
 export default function App() {
   return (
@@ -74,6 +76,10 @@ export default function App() {
                       <Route path="/build-your-fit" element={<BuildYourFitPage />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/contact" element={<Contact />} />
+
+                      {/* Admin Section (Protected) */}
+                      <Route path="/admin" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+                      <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
 
                       {/* 404 */}
                       <Route path="*" element={<NotFound />} />

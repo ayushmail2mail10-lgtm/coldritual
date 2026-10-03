@@ -27,7 +27,8 @@ import ProductCard from '../components/common/ProductCard';
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const product = getProductById(id);
+  const decodedId = id ? decodeURIComponent(id) : '';
+  const product = getProductById(decodedId);
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -168,7 +169,15 @@ export default function ProductDetail() {
             <div>
               {/* Category & Verified Badge */}
               <div className="flex items-center justify-between text-xs font-mono text-lightGray/70 uppercase tracking-widest mb-1.5">
-                <span>{product.categoryLabel}</span>
+                <div className="flex items-center gap-2">
+                  <span>{product.categoryLabel}</span>
+                  {product.gender && (
+                    <>
+                      <span className="text-white/20">•</span>
+                      <span className="text-icyBlue font-semibold">{product.gender.toUpperCase()}</span>
+                    </>
+                  )}
+                </div>
                 <span className="flex items-center gap-1 text-icyBlue">
                   <Star className="w-3.5 h-3.5 fill-current" />
                   <span>{product.rating} ({product.reviewsCount} reviews)</span>

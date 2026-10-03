@@ -12,10 +12,12 @@ export default function Shop() {
 
   // Read URL query params
   const initialCategory = searchParams.get('category') || 'all';
+  const initialGender = searchParams.get('gender') || 'all';
   const searchQuery = searchParams.get('q') || '';
   const initialSaleOnly = searchParams.get('sale') === 'true';
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedGender, setSelectedGender] = useState(initialGender);
   const [selectedPriceRange, setSelectedPriceRange] = useState('all');
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [saleOnly, setSaleOnly] = useState(initialSaleOnly);
@@ -23,11 +25,15 @@ export default function Shop() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
-  // Sync category changes with URL
+  // Sync category and gender changes with URL
   useEffect(() => {
     const cat = searchParams.get('category');
     if (cat && cat !== selectedCategory) {
       setSelectedCategory(cat);
+    }
+    const gen = searchParams.get('gender');
+    if (gen && gen !== selectedGender) {
+      setSelectedGender(gen);
     }
   }, [searchParams]);
 
@@ -41,6 +47,16 @@ export default function Shop() {
     setSearchParams(searchParams);
   };
 
+  const handleGenderChange = (gen) => {
+    setSelectedGender(gen);
+    if (gen === 'all') {
+      searchParams.delete('gender');
+    } else {
+      searchParams.set('gender', gen);
+    }
+    setSearchParams(searchParams);
+  };
+
   const handleSizeToggle = (size) => {
     setSelectedSizes(prev =>
       prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
@@ -49,6 +65,7 @@ export default function Shop() {
 
   const handleResetFilters = () => {
     setSelectedCategory('all');
+    setSelectedGender('all');
     setSelectedPriceRange('all');
     setSelectedSizes([]);
     setSaleOnly(false);
@@ -60,6 +77,11 @@ export default function Shop() {
     return products.filter((product) => {
       // Category filter
       if (selectedCategory !== 'all' && product.category !== selectedCategory) {
+        return false;
+      }
+
+      // Gender filter
+      if (selectedGender !== 'all' && product.gender && product.gender !== selectedGender && product.gender !== 'unisex') {
         return false;
       }
 
@@ -142,6 +164,8 @@ export default function Shop() {
           <FilterSidebar
             selectedCategory={selectedCategory}
             onCategoryChange={handleCategoryChange}
+            selectedGender={selectedGender}
+            onGenderChange={handleGenderChange}
             selectedPriceRange={selectedPriceRange}
             onPriceRangeChange={setSelectedPriceRange}
             selectedSizes={selectedSizes}
@@ -156,9 +180,14 @@ export default function Shop() {
 
           <main className="flex-1 min-w-0">
             {/* Active Filters Pill Bar */}
-            {(selectedCategory !== 'all' || selectedPriceRange !== 'all' || selectedSizes.length > 0 || saleOnly || searchQuery) && (
+            {(selectedCategory !== 'all' || selectedGender !== 'all' || selectedPriceRange !== 'all' || selectedSizes.length > 0 || saleOnly || searchQuery) && (
               <div className="mb-6 flex flex-wrap items-center gap-2 p-3 bg-softBlack/60 border border-white/5 font-mono text-[11px]">
                 <span className="text-lightGray/50 uppercase">Active Filters:</span>
+                {selectedGender !== 'all' && (
+                  <span className="bg-icyBlue/10 border border-icyBlue/30 text-icyBlue px-2.5 py-1 uppercase font-semibold">
+                    Division: {selectedGender}
+                  </span>
+                )}
                 {selectedCategory !== 'all' && (
                   <span className="bg-white/10 px-2.5 py-1 text-offWhite uppercase">
                     Cat: {selectedCategory}

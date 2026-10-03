@@ -16,6 +16,8 @@ const PRICE_RANGES = [
 export default function FilterSidebar({
   selectedCategory,
   onCategoryChange,
+  selectedGender = 'all',
+  onGenderChange,
   selectedPriceRange,
   onPriceRangeChange,
   selectedSizes,
@@ -29,6 +31,32 @@ export default function FilterSidebar({
 }) {
   const content = (
     <div className="space-y-8 font-mono text-xs">
+      {/* Gender Division Section */}
+      <div>
+        <div className="text-[11px] font-mono uppercase tracking-widest text-lightGray/60 mb-3 pb-1 border-b border-white/5 flex justify-between">
+          <span>Division</span>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5">
+          {[
+            { id: 'all', label: 'All' },
+            { id: 'men', label: 'Men' },
+            { id: 'women', label: 'Women' }
+          ].map((g) => (
+            <button
+              key={g.id}
+              onClick={() => onGenderChange && onGenderChange(g.id)}
+              className={`py-1.5 px-1 text-center uppercase text-[11px] font-mono transition-colors rounded-none border ${
+                selectedGender === g.id
+                  ? 'bg-offWhite text-deepBlack font-bold border-offWhite'
+                  : 'bg-white/5 text-lightGray hover:text-offWhite hover:bg-white/10 border-white/10'
+              }`}
+            >
+              {g.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Category Section */}
       <div>
         <div className="text-[11px] font-mono uppercase tracking-widest text-lightGray/60 mb-3 pb-1 border-b border-white/5 flex justify-between">

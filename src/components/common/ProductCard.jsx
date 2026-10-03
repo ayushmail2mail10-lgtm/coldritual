@@ -152,7 +152,15 @@ export default function ProductCard({ product, onOpenSizeGuide }) {
         <div className="p-4 flex flex-col flex-1 justify-between gap-3">
           <div>
             <div className="flex items-center justify-between text-[11px] font-mono text-lightGray/70 uppercase tracking-widest mb-1">
-              <span>{product.categoryLabel}</span>
+              <span className="flex items-center gap-1.5">
+                <span>{product.categoryLabel}</span>
+                {product.gender && (
+                  <>
+                    <span className="text-white/20">•</span>
+                    <span className="text-icyBlue/90 text-[10px]">{product.gender.toUpperCase()}</span>
+                  </>
+                )}
+              </span>
               {product.stock <= 8 && (
                 <span className="text-icyBlue text-[10px] lowercase font-sans">
                   only {product.stock} left
