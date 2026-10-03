@@ -14,7 +14,9 @@ export default function QuickViewModal({ product, isOpen, onClose, onOpenSizeGui
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]?.name);
+  const [selectedColor, setSelectedColor] = useState(
+    product.colors?.[0]?.name || (typeof product.colors?.[0] === 'string' ? product.colors[0] : 'Standard')
+  );
   const [quantity, setQuantity] = useState(1);
 
   const inWish = isInWishlist(product.id);
@@ -57,6 +59,9 @@ export default function QuickViewModal({ product, isOpen, onClose, onOpenSizeGui
                 <img
                   src={product.images[activeImageIndex] || product.images[0]}
                   alt={product.name}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?auto=format&fit=crop&w=1000&h=1250&q=85';
+                  }}
                   className="w-full h-full object-cover"
                 />
                 {product.discount > 0 && (
@@ -121,21 +126,25 @@ export default function QuickViewModal({ product, isOpen, onClose, onOpenSizeGui
                     <span className="text-offWhite font-semibold">{selectedColor}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    {product.colors.map((c) => (
-                      <button
-                        key={c.name}
-                        onClick={() => setSelectedColor(c.name)}
-                        className={`w-7 h-7 rounded-full border-2 p-0.5 transition-all ${
-                          selectedColor === c.name ? 'border-offWhite scale-110' : 'border-transparent hover:border-white/30'
-                        }`}
-                        title={c.name}
-                      >
-                        <span
-                          className="w-full h-full rounded-full block border border-white/20"
-                          style={{ backgroundColor: c.hex }}
-                        />
-                      </button>
-                    ))}
+                    {product.colors && product.colors.map((c, idx) => {
+                      const colorName = typeof c === 'string' ? c : (c?.name || 'Standard');
+                      const colorHex = typeof c === 'string' ? '#181818' : (c?.hex || '#181818');
+                      return (
+                        <button
+                          key={colorName + idx}
+                          onClick={() => setSelectedColor(colorName)}
+                          className={`w-7 h-7 rounded-full border-2 p-0.5 transition-all ${
+                            selectedColor === colorName ? 'border-offWhite scale-110' : 'border-transparent hover:border-white/30'
+                          }`}
+                          title={colorName}
+                        >
+                          <span
+                            className="w-full h-full rounded-full block border border-white/20"
+                            style={{ backgroundColor: colorHex }}
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

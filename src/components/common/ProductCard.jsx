@@ -42,6 +42,9 @@ export default function ProductCard({ product, onOpenSizeGuide }) {
               src={product.images[0]}
               alt={product.name}
               loading="lazy"
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?auto=format&fit=crop&w=1000&h=1250&q=85';
+              }}
               className={`w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
                 hasSecondaryImage && isHovered ? 'opacity-0' : 'opacity-100'
               }`}
@@ -53,6 +56,9 @@ export default function ProductCard({ product, onOpenSizeGuide }) {
                 src={product.images[1]}
                 alt={`${product.name} alternate view`}
                 loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = product.images[0] || 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?auto=format&fit=crop&w=1000&h=1250&q=85';
+                }}
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${
                   isHovered ? 'opacity-100' : 'opacity-0'
                 }`}
@@ -196,14 +202,18 @@ export default function ProductCard({ product, onOpenSizeGuide }) {
             {/* Color Swatch Dots */}
             {product.colors && product.colors.length > 0 && (
               <div className="flex items-center gap-1.5">
-                {product.colors.slice(0, 3).map((col, idx) => (
-                  <span
-                    key={idx}
-                    className="w-2.5 h-2.5 rounded-full border border-white/20 block"
-                    style={{ backgroundColor: col.hex }}
-                    title={col.name}
-                  />
-                ))}
+                {product.colors.slice(0, 3).map((col, idx) => {
+                  const hex = typeof col === 'string' ? '#181818' : (col?.hex || '#181818');
+                  const name = typeof col === 'string' ? col : (col?.name || 'Standard');
+                  return (
+                    <span
+                      key={idx}
+                      className="w-2.5 h-2.5 rounded-full border border-white/20 block"
+                      style={{ backgroundColor: hex }}
+                      title={name}
+                    />
+                  );
+                })}
                 {product.colors.length > 3 && (
                   <span className="text-[10px] font-mono text-lightGray/50">
                     +{product.colors.length - 3}

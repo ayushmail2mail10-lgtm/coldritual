@@ -47,7 +47,9 @@ export default function ProductDetail() {
     if (product) {
       setActiveImageIndex(0);
       setSelectedSize(product.sizes[0] || 'L');
-      setSelectedColor(product.colors[0]?.name || 'Standard');
+      setSelectedColor(
+        product.colors?.[0]?.name || (typeof product.colors?.[0] === 'string' ? product.colors[0] : 'Standard')
+      );
       setQuantity(1);
     }
   }, [id, product]);
@@ -117,6 +119,9 @@ export default function ProductDetail() {
               <img
                 src={product.images[activeImageIndex] || product.images[0]}
                 alt={product.name}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?auto=format&fit=crop&w=1000&h=1250&q=85';
+                }}
                 className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
 
@@ -157,7 +162,14 @@ export default function ProductDetail() {
                         : 'border-white/10 opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt=""
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?auto=format&fit=crop&w=1000&h=1250&q=85';
+                      }}
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -216,23 +228,27 @@ export default function ProductDetail() {
                   <span className="text-offWhite font-semibold">{selectedColor}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  {product.colors.map((c) => (
-                    <button
-                      key={c.name}
-                      onClick={() => setSelectedColor(c.name)}
-                      className={`w-8 h-8 rounded-full border-2 p-0.5 transition-all ${
-                        selectedColor === c.name
-                          ? 'border-offWhite scale-110'
-                          : 'border-transparent hover:border-white/40'
-                      }`}
-                      title={c.name}
-                    >
-                      <span
-                        className="w-full h-full rounded-full block border border-white/20"
-                        style={{ backgroundColor: c.hex }}
-                      />
-                    </button>
-                  ))}
+                  {product.colors && product.colors.map((c, idx) => {
+                    const colorName = typeof c === 'string' ? c : (c?.name || 'Standard');
+                    const colorHex = typeof c === 'string' ? '#181818' : (c?.hex || '#181818');
+                    return (
+                      <button
+                        key={colorName + idx}
+                        onClick={() => setSelectedColor(colorName)}
+                        className={`w-8 h-8 rounded-full border-2 p-0.5 transition-all ${
+                          selectedColor === colorName
+                            ? 'border-offWhite scale-110'
+                            : 'border-transparent hover:border-white/40'
+                        }`}
+                        title={colorName}
+                      >
+                        <span
+                          className="w-full h-full rounded-full block border border-white/20"
+                          style={{ backgroundColor: colorHex }}
+                        />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

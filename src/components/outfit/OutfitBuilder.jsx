@@ -16,17 +16,21 @@ export default function OutfitBuilder() {
   );
 
   const bottomProducts = products.filter(p =>
-    ['baggy-jeans', 'cargo-pants'].includes(p.category)
+    ['baggy-jeans', 'cargo-pants', 'cargos'].includes(p.category)
   );
 
   // Active selections
   const [selectedTop, setSelectedTop] = useState(topProducts[0]);
-  const [selectedTopSize, setSelectedTopSize] = useState(topProducts[0].sizes[0]);
-  const [selectedTopColor, setSelectedTopColor] = useState(topProducts[0].colors[0]?.name);
+  const [selectedTopSize, setSelectedTopSize] = useState(topProducts[0]?.sizes[0] || 'L');
+  const [selectedTopColor, setSelectedTopColor] = useState(
+    topProducts[0]?.colors?.[0]?.name || (typeof topProducts[0]?.colors?.[0] === 'string' ? topProducts[0].colors[0] : 'Standard')
+  );
 
   const [selectedBottom, setSelectedBottom] = useState(bottomProducts[0]);
-  const [selectedBottomSize, setSelectedBottomSize] = useState(bottomProducts[0].sizes[0]);
-  const [selectedBottomColor, setSelectedBottomColor] = useState(bottomProducts[0].colors[0]?.name);
+  const [selectedBottomSize, setSelectedBottomSize] = useState(bottomProducts[0]?.sizes[0] || '32');
+  const [selectedBottomColor, setSelectedBottomColor] = useState(
+    bottomProducts[0]?.colors?.[0]?.name || (typeof bottomProducts[0]?.colors?.[0] === 'string' ? bottomProducts[0].colors[0] : 'Standard')
+  );
 
   // Bundle pricing logic
   const originalComboTotal = selectedTop.price + selectedBottom.price;
@@ -46,12 +50,16 @@ export default function OutfitBuilder() {
     const randomTop = topProducts[Math.floor(Math.random() * topProducts.length)];
     const randomBottom = bottomProducts[Math.floor(Math.random() * bottomProducts.length)];
     setSelectedTop(randomTop);
-    setSelectedTopSize(randomTop.sizes[0]);
-    setSelectedTopColor(randomTop.colors[0]?.name);
+    setSelectedTopSize(randomTop.sizes[0] || 'L');
+    setSelectedTopColor(
+      randomTop.colors?.[0]?.name || (typeof randomTop.colors?.[0] === 'string' ? randomTop.colors[0] : 'Standard')
+    );
 
     setSelectedBottom(randomBottom);
-    setSelectedBottomSize(randomBottom.sizes[0]);
-    setSelectedBottomColor(randomBottom.colors[0]?.name);
+    setSelectedBottomSize(randomBottom.sizes[0] || '32');
+    setSelectedBottomColor(
+      randomBottom.colors?.[0]?.name || (typeof randomBottom.colors?.[0] === 'string' ? randomBottom.colors[0] : 'Standard')
+    );
     showToast('NEW RITUAL FIT RANDOMIZED', 'info');
   };
 
